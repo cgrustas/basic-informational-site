@@ -1,35 +1,17 @@
-import http from "node:http";
-import fs from "node:fs";
-
-// Create a local server to receive data from
-const server = http.createServer();
+const express = require("express");
+const app = express();
 
 // Listen to the request event
-server.on("request", (request, res) => {
-  let file;
-  switch (request.url) {
-    case "/":
-      file = "index.html";
-      break;
-    case "/about":
-      file = "about.html";
-      break;
-    case "/contact-me":
-      file = "contact-me.html";
-      break;
-    default:
-      file = "404.html";
-      break;
-  }
-
-  let data;
-  try {
-    data = fs.readFileSync("./" + file, "utf8");
-    res.writeHead(200, { "Content-Type": "text/html" });
-    res.end(data);
-  } catch (err) {
-    console.error(err);
-  }
+app.get("/", (req, res) => res.send("<h1>Index</h1>"));
+app.get("/about", (req, res) => res.send("<h1>About</h1>"));
+app.get("/contact-me", (req, res) => res.send("<h1>Contact Me</h1>"));
+app.use((req, res, next) => {
+  res.send("<h1>404</h1>");
 });
 
-server.listen(8080);
+const PORT = 8080;
+app.listen(PORT, (error) => {
+  if (error) {
+    throw error;
+  }
+});
